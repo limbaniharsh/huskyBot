@@ -1,2 +1,6 @@
 .idea
 temp/
+test.py
+test.txt
+src/scrapper/Data/
+src/scrapper/Data.zip

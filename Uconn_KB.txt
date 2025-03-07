@@ -1,16 +1,20 @@
-List of more Useful How to and Guides
+List of Downloaded KB
 
--	Information Technology
-    o	Guide
-        	Student Guide to Uconn Technology
-    o	IT Support and Information
-    o	Accounts, NetID, and Duo
-    o	Devices and Equipment
-    o	On-Campus Printing
-    o	Microsoft 365
-    o	Network
--	Student Academics and Services
-    o	Student Administration System
--	Parking
--	Teaching and Learning
-    o	HuskyCT
+Done -	Information Technology
+Done    o	Guide
+Done        	Student Guide to Uconn Technology
+Done    o	IT Support and Information
+Done    o	Accounts, NetID, and Duo
+Done    o	Devices and Equipment
+Done    o	On-Campus Printing
+Done    o	Microsoft 365
+Done    o	Network
+
+Done -	Student Academics and Services
+Done    o	Student Administration System
+
+Done -	Parking
+
+Done -	Teaching and Learning
+Done    o	HuskyCT
+Done    o	HuskyCT- Ultra
