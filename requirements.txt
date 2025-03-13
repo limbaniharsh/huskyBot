@@ -1,0 +1,5 @@
+selenium
+langchain-community
+pypdf
+langchain-core
+langchain-huggingface

@@ -2,5 +2,7 @@
 temp/
 test.py
 test.txt
-src/scrapper/Data/
-src/scrapper/Data.zip
+structure.txt
+src/scraper/Data/
+src/scraper/Data.zip
+data/raw

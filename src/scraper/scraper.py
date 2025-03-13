@@ -1,74 +1,7 @@
-import csv
-import os
 import base64
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.print_page_options import PrintOptions
-
-
-def check_exists(driver, by, xpath):
-    try:
-        e = driver.find_element(by, xpath)
-    except NoSuchElementException:
-        return False
-    return e.is_enabled()
-
-
-def wait_until_page_is_fully_load(driver, timeout=10):
-    WebDriverWait(driver, timeout).until(
-        lambda d: d.execute_script("return document.readyState") == "complete"
-    )
-
-
-def wait_for_ajax(driver, timeout=10):
-    WebDriverWait(driver, timeout).until(
-        lambda d: d.execute_script("return jQuery.active == 0")
-    )
-
-
-def scroll_down(driver):
-    driver.execute_script(
-        "document.getElementsByTagName('footer')[0].scrollIntoView({behavior: 'smooth', block: 'center'})")
-
-
-def scroll_to_element(driver, element):
-    driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'})", element)
-
-
-def scroll_to_img_wait_until_load(driver, img_element, timeout=10):
-    scroll_to_element(driver, img_element)
-    WebDriverWait(driver, timeout).until(
-        lambda d: d.execute_script("return arguments[0].complete", img_element)
-    )
-
-
-def wait_until_all_image_load(driver):
-    images = driver.find_elements(By.TAG_NAME, "img")
-    print(f"Found {len(images)}")
-
-    for img in images:
-        scroll_to_img_wait_until_load(driver, img)
-
-
-def wait_until_knowledge_based_page_load(driver, timeout=20):
-    WebDriverWait(driver, timeout).until(
-        lambda d: check_exists(driver, By.CLASS_NAME, "ext_loading"))
-
-    WebDriverWait(driver, timeout).until(
-        lambda d: d.execute_script(
-            r"return Array.from(document.getElementsByClassName('ext_loading')).every((e)=> e.style.display == 'none')"))
-
-
-def write_into_csv(data, filename):
-    should_write_header = os.path.exists(filename)
-
-    with open(filename, 'a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=["file", "URL"])
-        if not should_write_header:
-            writer.writeheader()
-        writer.writerows(data)
+from scraper.utils import *
 
 
 def create_save_pdf(driver, url, file_name):
@@ -103,13 +36,7 @@ def scrapper(driver, base_url):
                 print(f"Fetching - {url}")
 
                 driver.implicitly_wait(2)
-
-                if check_exists(driver, By.XPATH, "//button[contains(@data-ui-id,'accept-all-cookies')]"):
-                    cookies_accept = driver.find_element(
-                                            By.XPATH,
-                                            "//button[contains(@data-ui-id,'accept-all-cookies')]"
-                                            )
-                    cookies_accept.click()
+                confirm_cookies_if_present(driver)
 
                 wait_until_knowledge_based_page_load(driver)
 
