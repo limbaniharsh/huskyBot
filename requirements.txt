@@ -4,6 +4,8 @@ langchain-core
 langgraph
 langchain-huggingface
 langchain-google-genai
+langchain_ollama
+langchain_openai
 faiss-cpu
 pymupdf
 tqdm

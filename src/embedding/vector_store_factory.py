@@ -1,28 +1,33 @@
 import logging
 import faiss
-from IPython.utils.text import indent
 from langchain_core.vectorstores import InMemoryVectorStore, FAISS
+from langchain_community.docstore.in_memory import InMemoryDocstore
+
+from config import Config
 
 
 class VectorStoreFactory:
     """Factory class to provide vector stores based on configuration."""
 
     @staticmethod
-    def get_vector_store_from_config(embedding, config):
+    def get_vector_store_from_config(embedding, config=None):
         """
         Given a config, returns the corresponding vector store.
         """
-        vectore_store_config = config.get("vector_store",{})
-        vector_store_type = vectore_store_config.get("type", "in_memory")
+        if config is None:
+            config = Config.default_config()
+
+        vector_store_type = config.vector_store_type
 
         if vector_store_type == "in_memory":
             return VectorStoreFactory.get_in_memory_vector_store(embedding)
 
         elif vector_store_type == "faiss":
-            file_name = vectore_store_config.get("file_name", None)
+            file_name = config.vector_store_file_name
             if file_name is None:
                 return VectorStoreFactory.initialize_vector_store(embedding)
-            return VectorStoreFactory.load_vector_db_from_local_if_exist(file_name, embedding)
+            file_path = config.default_data_path / file_name
+            return VectorStoreFactory.load_vector_db_from_local_if_exist(file_path, embedding)
 
         else:
             logging.warning(f"Vector store type {vector_store_type} not recognized, defaulting to InMemory.")
@@ -58,17 +63,19 @@ class VectorStoreFactory:
             raise ValueError(f"Failed to initialize vector store: {str(e)}")
 
     @staticmethod
-    def save_local(vector_store, config):
+    def save_local(vector_store, config=None):
         """
         Saves the vector store to a local file.
         """
-        vectore_store_config = config.get("vector_store", {})
-        file = vectore_store_config.get("file")
-        index_name = vectore_store_config.get("index_name")
+        if config is None:
+            config = Config.default_config()
+
+        file_path = config.default_data_path / config.vector_store_file_name
+        index_name = config.vector_store_index_name
         try:
 
-            vector_store.save_local(file, index_name=index_name)
-            logging.info(f"Vector store saved successfully to {file} with index name {index_name}.")
+            vector_store.save_local(file_path, index_name=index_name)
+            logging.info(f"Vector store saved successfully to {file_path} with index name {index_name}.")
         except Exception as e:
-            logging.error(f"Failed to save vector store to {file}: {str(e)}")
-            raise ValueError(f"Failed to save vector store to {file}: {str(e)}")
+            logging.error(f"Failed to save vector store to {file_path}: {str(e)}")
+            raise ValueError(f"Failed to save vector store to {file_path}: {str(e)}")

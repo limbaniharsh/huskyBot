@@ -1,4 +1,5 @@
 import yaml
+import pathlib
 
 class Config:
     def __init__(self, config_file: str):
@@ -13,51 +14,55 @@ class Config:
 
         # LLM model settings
         self.llm_model = config_data.get('llm_model', {})
-        self.llm_model_provider = self.llm_model.get('provider', 'openai')
-        self.llm_model_name = self.llm_model.get('name', 'gpt-4')
+        self.llm_model_provider = self.llm_model.get('provider', 'google_ai')
+        self.llm_model_name = self.llm_model.get('name', 'gemini-2.0-flash-001')
         self.temperature = self.llm_model.get('temperature', 0.7)
         self.max_tokens = self.llm_model.get('max_tokens', 150)
-        self.api_key = self.llm_model.get('api_key', None)
-        self.endpoint_url = self.llm_model.get('endpoint_url', '')
-        self.local_api_endpoint = self.llm_model.get('local_api_endpoint', '')
 
         # Embedding settings
         self.embedding = config_data.get('embedding', {})
-        self.embedding_model_provider = self.embedding.get('model_provider', 'sentence_transformers')
-        self.embedding_model_name = self.embedding.get('model_name', 'sentence-transformers/all-MiniLM-L6-v2')
-        self.embedding_dim = self.embedding.get('embedding_dim', 768)
-        self.normalize_embeddings = self.embedding.get('normalize_embeddings', True)
-        self.local_embedding_path = self.embedding.get('local_embedding_path', '')
+        self.embedding_provider = self.embedding.get('provider', 'huggingface')
+        self.embedding_model_name = self.embedding.get('model_name', 'sentence-transformers/all-mpnet-base-v2')
 
-        # Knowledge Base settings
-        self.knowledge_base = config_data.get('knowledge_base', {})
-        self.kb_type = self.knowledge_base.get('type', 'faiss')
-        self.kb_db_path = self.knowledge_base.get('db_path', '/path/to/knowledge_base')
-        self.vector_search_limit = self.knowledge_base.get('vector_search_limit', 10)
+        # Splitter settings
+        self.splitter = config_data.get('splitter', {})
+        self.splitter_type = self.splitter.get('type', 'recursive')
+        self.chunk_size = self.splitter.get('chunk_size', 1000)
+        self.chunk_overlap = self.splitter.get('chunk_overlap', 200)
 
-        # Retriever settings
-        self.retriever = config_data.get('retriever', {})
-        self.retriever_type = self.retriever.get('type', 'cosine_similarity')
-        self.batch_size = self.retriever.get('batch_size', 8)
-        self.top_k = self.retriever.get('top_k', 5)
+        # Vector store settings
+        self.vector_store = config_data.get('vector_store', {})
+        self.vector_store_type = self.vector_store.get('type', 'faiss')
+        self.vector_store_file_name = self.vector_store.get('file_name', 'faiss_index')
+        self.vector_store_index_name = self.vector_store.get('index_name', 'index')
 
-        # Context settings
-        self.context_window = config_data.get('context_window', 3)
-        self.max_input_length = config_data.get('max_input_length', 512)
-        self.answer_format = config_data.get('answer_format', 'simple')
+        # Data file paths
+        self.data_files = config_data.get('data_files', {})
+        self.default_data_path = pathlib.Path(self.data_files.get('default_data_path', "../data"))
+        self.raw_data_path = self.default_data_path / self.data_files.get('raw_data', "/raw")
+        self.file_url_mapper_name = self.data_files.get('file_url_mapper', "FileURLMapper.csv")
 
-        # API settings
-        self.api = config_data.get('api', {})
-        self.api_host = self.api.get('host', '0.0.0.0')
-        self.api_port = self.api.get('port', 5000)
+        # Document search settings
+        self.document_search = config_data.get('document_search', {})
+        self.num_documents = self.document_search.get('num_documents', 5)  # Default to retrieving top 5 documents
+        self.min_search_score = self.document_search.get('min_search_score', 0)  # Default to 0.5
+
+        # Scraper settings
+        self.scraper = config_data.get('scraper', {})
+        self.base_url = self.scraper.get("base_url", "https://kb.uconn.edu")
+        self.copy_scraper_data_to_data = True if self.scraper.get("copy_to_data", "true").lower() == "true" else False
+
 
         # Logging settings
         self.logging = config_data.get('logging', {})
         self.log_level = self.logging.get('level', 'INFO')
         self.log_file = self.logging.get('log_file', 'huskybot.log')
+        self.max_log_size = self.logging.get('max_log_size', '10MB')
 
     def __str__(self):
-        return f"App: {self.app_name}, Version: {self.version}, Debug: {self.debug}, Model: {self.llm_model_name}, Provider: {self.llm_model_provider}"
+        return (f"App: {self.app_name}, Version: {self.version}, Debug: {self.debug}, "
+                f"Model: {self.llm_model_name}, Provider: {self.llm_model_provider}, "
+                f"Embedding Model: {self.embedding_model_name}, Vector Store: {self.vector_store_type}")
 
     @staticmethod
     def default_config():

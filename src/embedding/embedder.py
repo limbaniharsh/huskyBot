@@ -1,21 +1,10 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from doc_loader import PDFDocLoader
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.vectorstores import InMemoryVectorStore
+from embedding_factory import EmbeddingFactory
+from vector_store_factory import VectorStoreFactory
+from splitter_factory import SplitterFactory
 import pathlib
 
 
-def get_default_embeddings(model_name="sentence-transformers/all-mpnet-base-v2"):
-    """Return the default embedding model."""
-    return HuggingFaceEmbeddings(model_name=model_name)
-
-def get_default_splitter(**kwargs):
-    """Return the default text splitter."""
-    return RecursiveCharacterTextSplitter(chunk_size=kwargs.get("chunk_size"), chunk_overlap=kwargs.get("chunk_overlap"), add_start_index=True)
-
-def get_default_vector_store(embedding):
-    """Return the default vector store."""
-    return InMemoryVectorStore(embedding)
 
 
 class PDFToVectorDB:
@@ -23,17 +12,16 @@ class PDFToVectorDB:
         self.kwargs = kwargs
 
         if embedding is None:
-            embedding = get_default_embeddings()
+            embedding = EmbeddingFactory.get_embeddings_from_config()
         self.embedding = embedding
 
         if splitter is None:
             chunk_size = self.kwargs.get("chunk_size", 1000)
-            splitter = get_default_splitter(chunk_size=chunk_size,
-                                            chunk_overlap=self.kwargs.get("chunk_overlap", int(chunk_size / 5)))
+            splitter = SplitterFactory.get_splitter_from_config()
         self.splitter = splitter
 
         if vector_store is None:
-            vector_store = get_default_vector_store(self.embedding)
+            vector_store = VectorStoreFactory.get_vector_store_from_config(self.embedding)
         self.vector_store = vector_store
 
     def process_pdf_and_store_in_vectorDB(self, file_path, loader=None, metadata_keys=None, new_metadata=None, mode="page"):
@@ -60,7 +48,5 @@ class PDFToVectorDB:
         ids = self.vector_store.add_documents(documents)
         return ids
 
-    def save_local(self, file, index_name):
-        self.vector_store.save_local(file, index_name=index_name)
 
 

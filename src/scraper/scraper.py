@@ -1,6 +1,8 @@
 import base64
 from selenium import webdriver
 from selenium.webdriver.common.print_page_options import PrintOptions
+
+from config import Config
 from scraper.utils import *
 
 
@@ -11,7 +13,7 @@ def create_save_pdf(driver, url, file_name):
     print_options = PrintOptions()
     pdf = driver.print_page(print_options)
 
-    with open(BASE_FOLDER + file_name + ".pdf", 'wb') as f:
+    with open(file_name, 'wb') as f:
         print(f"Writing -{url} - into {file_name}")
         f.write(base64.b64decode(pdf))
 
@@ -19,7 +21,7 @@ def create_save_pdf(driver, url, file_name):
     already_visited_url.add(url)
 
 
-def scrapper(driver, base_url):
+def scrapper(driver, base_url, base_path):
     for space in data_to_scrape:
 
         if space not in visited_space_next_file_number:
@@ -44,7 +46,7 @@ def scrapper(driver, base_url):
                     print(f"Skipping Download Already visited URL - {url}")
                     visited_space_next_file_number[space] -= 1
                 else:
-                    create_save_pdf(driver, url, f"{space}_{visited_space_next_file_number[space]}")
+                    create_save_pdf(driver, url, base_path / f"{space}_{visited_space_next_file_number[space]}.pdf")
 
                 printable_div = driver.find_element(By.ID, "printable_document")
                 new_links = printable_div.find_elements(
@@ -67,38 +69,17 @@ def scrapper(driver, base_url):
                 print(f"NoSuchElementException for {url}")
                 visited_space_next_file_number[space] -= 1
 
+def main_scraper(config=None):
 
-if __name__ == "__main__":
-    csv_file = "FileURLMapper.csv"
-    BASE_URL = "https://kb.uconn.edu"
-    BASE_FOLDER = "Data\\"
+    if config is None:
+        config = Config.default_config()
 
-    # Below dict is in format "Space": "Home URL for Space"
-    data_to_scrape = {
-        "StudentAdmin": ["/space/SAS/10758194553"],
-        "Parking": ["/space/PAR/10894836117"],
-        "HuskyCT": ["/space/TL/10726900389"],
-        "HuskyCT-Ultra": ["/space/TL/26040828048", "/space/TL/26211713033", "/space/TL/26054328575",
-                          "/space/TL/26043285770", "/space/TL/26043090046", "/space/TL/26044268884",
-                          "/space/TL/26043678882", "/space/TL/26046857479", "/space/TL/26044432789",
-                          "/space/TL/26045939985", "/space/TL/27366326319", "/space/TL/26054394050",
-                          "/space/TL/26052199835", "/space/TL/26053706428", "/space/TL/26056720610",
-                          "/space/TL/26546896910", "/space/TL/26724991067", "/space/TL/26844168198",
-                          "/space/TL/27107983406"],
-        "IT_Guides": ["/space/IKB/10769924612", "/space/IKB/10784508250", "/space/IKB/26279051510",
-                      "/space/IKB/26016516022", "/space/IKB/26302447699", "/space/IKB/26302054492",
-                      "/space/IKB/26303627270"],
-        "IT-NetId": ["/space/IKB/10724476730", "/space/IKB/10744071296", "/space/IKB/10728767960"],
-        "IT-Printing": ["/space/IKB/10899849280", "/space/IKB/26996441110", "/space/IKB/26928676873"],
-        "IT-Network": ["/space/IKB/10724476737"],
-        "IT-Support": ["/space/IKB/10759275649", "/space/IKB/26327319630", "/space/IKB/10914103701",
-                       "/space/IKB/26055606857", "/space/IKB/27175059526", "/space/IKB/10845093938"],
-        "IT-Devices": ["/space/IKB/10852500909"],
-        "IT-Microsoft": ["/space/IKB/10770819474"]
-    }
+    scraper_data = config.default_data_path / "scraper_data"
+    unfetched_csv = scraper_data / "UnFetchedURL.csv"
+    csv_file = scraper_data / config.file_url_mapper_name
 
-    already_visited_url = set()
-    visited_space_next_file_number = {}
+    BASE_URL = config.base_url
+    BASE_FOLDER = scraper_data / "data"
 
     if os.path.exists(csv_file):
         print("Found Existing file to URL mapper file")
@@ -115,7 +96,7 @@ if __name__ == "__main__":
                 already_visited_url.add(row["URL"])
         print(visited_space_next_file_number)
 
-    if os.path.exists("UnFetchedURL.csv"):
+    if os.path.exists(unfetched_csv):
         print("Found Existing UnFetched URL file")
         with open('UnFetchedURL.csv', 'r') as f:
             reader = csv.DictReader(f)
@@ -125,13 +106,12 @@ if __name__ == "__main__":
                     data_to_scrape[space] = []
                 data_to_scrape[space].append(row["URL"])
 
-    completed_links_file = []
 
     web_driver = webdriver.Chrome()
     web_driver.maximize_window()
 
     try:
-        scrapper(web_driver, BASE_URL)
+        scrapper(web_driver, BASE_URL, BASE_FOLDER)
     except Exception as e:
         print(e)
         unfetched_url = []
@@ -150,3 +130,32 @@ if __name__ == "__main__":
 
     print("SUMMARY OF DOWNLOADED FILE")
     print(f"Total Download - {len(completed_links_file)}")
+
+
+
+completed_links_file = []
+already_visited_url = set()
+visited_space_next_file_number = {}
+# Below dict is in format "Space": "Home URL for Space"
+data_to_scrape = {
+    "StudentAdmin": ["/space/SAS/10758194553"],
+    "Parking": ["/space/PAR/10894836117"],
+    "HuskyCT": ["/space/TL/10726900389"],
+    "HuskyCT-Ultra": ["/space/TL/26040828048", "/space/TL/26211713033", "/space/TL/26054328575",
+                      "/space/TL/26043285770", "/space/TL/26043090046", "/space/TL/26044268884",
+                      "/space/TL/26043678882", "/space/TL/26046857479", "/space/TL/26044432789",
+                      "/space/TL/26045939985", "/space/TL/27366326319", "/space/TL/26054394050",
+                      "/space/TL/26052199835", "/space/TL/26053706428", "/space/TL/26056720610",
+                      "/space/TL/26546896910", "/space/TL/26724991067", "/space/TL/26844168198",
+                      "/space/TL/27107983406"],
+    "IT_Guides": ["/space/IKB/10769924612", "/space/IKB/10784508250", "/space/IKB/26279051510",
+                  "/space/IKB/26016516022", "/space/IKB/26302447699", "/space/IKB/26302054492",
+                  "/space/IKB/26303627270"],
+    "IT-NetId": ["/space/IKB/10724476730", "/space/IKB/10744071296", "/space/IKB/10728767960"],
+    "IT-Printing": ["/space/IKB/10899849280", "/space/IKB/26996441110", "/space/IKB/26928676873"],
+    "IT-Network": ["/space/IKB/10724476737"],
+    "IT-Support": ["/space/IKB/10759275649", "/space/IKB/26327319630", "/space/IKB/10914103701",
+                   "/space/IKB/26055606857", "/space/IKB/27175059526", "/space/IKB/10845093938"],
+    "IT-Devices": ["/space/IKB/10852500909"],
+    "IT-Microsoft": ["/space/IKB/10770819474"]
+}

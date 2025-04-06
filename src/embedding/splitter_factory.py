@@ -1,19 +1,22 @@
 import logging
 from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
+from config import config, Config
 
 
 class SplitterFactory:
     """Factory class to provide text splitters based on configuration."""
 
     @staticmethod
-    def get_splitter_from_config(config):
+    def get_splitter_from_config(config=None):
         """
         Given a config, returns the corresponding text splitter.
         """
-        splitter_config = config.get("splitter",{})
-        splitter_type = splitter_config.get("splitter_type", "recursive")
-        chunk_size = splitter_config.get("chunk_size", 1000)
-        chunk_overlap = splitter_config.get("chunk_overlap", 200)
+        if config is None:
+            config = Config.default_config()
+
+        splitter_type = config.splitter_type
+        chunk_size = config.chunk_size
+        chunk_overlap = config.chunk_overlap
 
         if splitter_type == "recursive":
             return SplitterFactory.get_recursive_splitter(chunk_size, chunk_overlap)

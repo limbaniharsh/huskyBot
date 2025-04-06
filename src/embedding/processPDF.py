@@ -1,12 +1,10 @@
-import pathlib
 import tqdm
 from embedder import *
 from utils import *
-import faiss
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.vectorstores import FAISS
 from embedder import PDFToVectorDB
-
+from vector_store_factory import VectorStoreFactory
+from embedding_factory import EmbeddingFactory
+from config import Config
 
 METADATA_KEYS = ['creationdate', 'source', 'total_pages', 'title', 'keywords']
 
@@ -54,56 +52,31 @@ def process_pdfs(files, processor, file_url_map):
     return file_vector_ids
 
 
-def save_vectors_to_disk(file_name, processor):
-    """
-    Saves the vector store to disk.
-    """
-    processor.vector_store.save_local(file_name)
 
 
-def load_vector_db_from_local(file_name, embedding):
-    """
-    Loads the vector DB from a local file.
-    """
-    return FAISS.load_local(file_name, embedding, allow_dangerous_deserialization=True)
 
-
-def initialize_vector_store(embedding):
-    """
-    Initializes the vector store using FAISS and the given embedding function.
-    """
-    embedding_dim = len(embedding.embed_query("hello world"))
-    index = faiss.IndexFlatL2(embedding_dim)
-    return FAISS(
-        embedding_function=embedding,
-        index=index,
-        docstore=InMemoryDocstore(),
-        index_to_docstore_id={},
-    )
-
-
-def main():
+def main_process_pdf(config=None):
     # Directories and file paths
-    data_dir = pathlib.Path("../../data")
-    raw_data_dir = data_dir / "raw"
+    if config is None:
+        config = Config.default_config()
+
+    data_dir = config.default_data_path
+    raw_data_dir = config.raw_data_path
+
     files = [f for f in raw_data_dir.iterdir()]
-    file_url_mapper_path = data_dir / "FileURLMapper.csv"
-    vector_db_location = data_dir / "faiss_index"
+    file_url_mapper_path = data_dir / config.file_url_mapper_name
+    vector_db_location = data_dir / config.vector_store_file_name
 
     # Load the file URL map
     file_url_map = load_file_url_map(file_url_mapper_path)
 
     # Initialize embedding and vector store
-    embedding = get_default_embeddings()
-    vector_store = initialize_vector_store(embedding)
+    embedding = EmbeddingFactory.get_embeddings_from_config()
+    vector_store = VectorStoreFactory.get_vector_store_from_config(embedding)
 
     # Initialize processor
     processor = PDFToVectorDB(vector_store=vector_store, embedding=embedding)
 
     # Process the PDFs and save vectors
     process_pdfs(files, processor, file_url_map)
-    save_vectors_to_disk(vector_db_location, processor)
-
-
-if __name__ == "__main__":
-    main()
+    VectorStoreFactory.save_local(vector_db_location)

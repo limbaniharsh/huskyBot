@@ -9,7 +9,7 @@ class EmbeddingFactory:
     """Factory class to provide embeddings based on configuration."""
 
     @staticmethod
-    def get_embeddings_from_config(config):
+    def get_embeddings_from_config(config=dict()):
         """
         Given a config, returns the corresponding embedding model.
         """
