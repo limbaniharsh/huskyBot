@@ -1,10 +1,8 @@
 import base64
 from selenium import webdriver
 from selenium.webdriver.common.print_page_options import PrintOptions
-
 from config import Config
 from scraper.utils import *
-
 
 def create_save_pdf(driver, url, file_name):
     wait_until_all_image_load(driver)
@@ -98,7 +96,7 @@ def main_scraper(config=None):
 
     if os.path.exists(unfetched_csv):
         print("Found Existing UnFetched URL file")
-        with open('UnFetchedURL.csv', 'r') as f:
+        with open(unfetched_csv, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 space = row["space"]
@@ -120,7 +118,7 @@ def main_scraper(config=None):
             for u in data_to_scrape[key]:
                 unfetched_url.append({"space": key, "URL": u})
 
-        with open("UnFetchedURL.csv", 'w', newline='') as f:
+        with open(unfetched_csv, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=["space", "URL"])
             writer.writeheader()
             writer.writerows(unfetched_url)
@@ -138,24 +136,28 @@ already_visited_url = set()
 visited_space_next_file_number = {}
 # Below dict is in format "Space": "Home URL for Space"
 data_to_scrape = {
-    "StudentAdmin": ["/space/SAS/10758194553"],
+    #"StudentAdmin": ["/space/SAS/10758194553"],
     "Parking": ["/space/PAR/10894836117"],
-    "HuskyCT": ["/space/TL/10726900389"],
-    "HuskyCT-Ultra": ["/space/TL/26040828048", "/space/TL/26211713033", "/space/TL/26054328575",
-                      "/space/TL/26043285770", "/space/TL/26043090046", "/space/TL/26044268884",
-                      "/space/TL/26043678882", "/space/TL/26046857479", "/space/TL/26044432789",
-                      "/space/TL/26045939985", "/space/TL/27366326319", "/space/TL/26054394050",
-                      "/space/TL/26052199835", "/space/TL/26053706428", "/space/TL/26056720610",
-                      "/space/TL/26546896910", "/space/TL/26724991067", "/space/TL/26844168198",
-                      "/space/TL/27107983406"],
-    "IT_Guides": ["/space/IKB/10769924612", "/space/IKB/10784508250", "/space/IKB/26279051510",
-                  "/space/IKB/26016516022", "/space/IKB/26302447699", "/space/IKB/26302054492",
-                  "/space/IKB/26303627270"],
-    "IT-NetId": ["/space/IKB/10724476730", "/space/IKB/10744071296", "/space/IKB/10728767960"],
-    "IT-Printing": ["/space/IKB/10899849280", "/space/IKB/26996441110", "/space/IKB/26928676873"],
-    "IT-Network": ["/space/IKB/10724476737"],
-    "IT-Support": ["/space/IKB/10759275649", "/space/IKB/26327319630", "/space/IKB/10914103701",
-                   "/space/IKB/26055606857", "/space/IKB/27175059526", "/space/IKB/10845093938"],
-    "IT-Devices": ["/space/IKB/10852500909"],
-    "IT-Microsoft": ["/space/IKB/10770819474"]
+    # "HuskyCT": ["/space/TL/10726900389"],
+    # "HuskyCT-Ultra": ["/space/TL/26040828048", "/space/TL/26211713033", "/space/TL/26054328575",
+    #                   "/space/TL/26043285770", "/space/TL/26043090046", "/space/TL/26044268884",
+    #                   "/space/TL/26043678882", "/space/TL/26046857479", "/space/TL/26044432789",
+    #                   "/space/TL/26045939985", "/space/TL/27366326319", "/space/TL/26054394050",
+    #                   "/space/TL/26052199835", "/space/TL/26053706428", "/space/TL/26056720610",
+    #                   "/space/TL/26546896910", "/space/TL/26724991067", "/space/TL/26844168198",
+    #                   "/space/TL/27107983406"],
+    # "IT_Guides": ["/space/IKB/10769924612", "/space/IKB/10784508250", "/space/IKB/26279051510",
+    #               "/space/IKB/26016516022", "/space/IKB/26302447699", "/space/IKB/26302054492",
+    #               "/space/IKB/26303627270"],
+    # "IT-NetId": ["/space/IKB/10724476730", "/space/IKB/10744071296", "/space/IKB/10728767960"],
+    # "IT-Printing": ["/space/IKB/10899849280", "/space/IKB/26996441110", "/space/IKB/26928676873"],
+    # "IT-Network": ["/space/IKB/10724476737"],
+    # "IT-Support": ["/space/IKB/10759275649", "/space/IKB/26327319630", "/space/IKB/10914103701",
+    #                "/space/IKB/26055606857", "/space/IKB/27175059526", "/space/IKB/10845093938"],
+    # "IT-Devices": ["/space/IKB/10852500909"],
+    # "IT-Microsoft": ["/space/IKB/10770819474"]
 }
+
+
+if __name__ == "__main__":
+    main_scraper()
