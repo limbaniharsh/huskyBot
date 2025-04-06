@@ -31,7 +31,11 @@ document_search:
   # Number of documents to retrieve from the vector store
   num_documents: 5
   # Minimum score threshold for document relevance in search results
-  min_search_score: 0 # zero means any relevance
+  # - "distance" (lower values indicate better matches)
+  # - "relevance" (higher values indicate better matches)
+  search_type: "distance"  # Default filter type
+  min_search_score: 0.5    # The min_search_score value for filtering results
+  
 
 scraper:
   base_url: "https://kb.uconn.edu"

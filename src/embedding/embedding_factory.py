@@ -1,4 +1,5 @@
 import logging
+from config import Config
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_openai import OpenAIEmbeddings
@@ -9,13 +10,15 @@ class EmbeddingFactory:
     """Factory class to provide embeddings based on configuration."""
 
     @staticmethod
-    def get_embeddings_from_config(config=dict()):
+    def get_embeddings_from_config(config=None):
         """
         Given a config, returns the corresponding embedding model.
         """
-        embedding_config = config.get("embedding",{})
-        model_name = embedding_config.get("model_name", "sentence-transformers/all-mpnet-base-v2")
-        provider = embedding_config.get("provider", "huggingface")  # Default to HuggingFace
+        if config is None:
+            config = Config.default_config()
+        
+        model_name = config.embedding_model_name
+        provider = config.embedding_provider
 
         if provider == "huggingface":
             return EmbeddingFactory.get_huggingface_embeddings(model_name)

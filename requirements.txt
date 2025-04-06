@@ -1,4 +1,5 @@
 selenium
+accelerate
 langchain-community
 langchain-core
 langgraph

@@ -13,11 +13,10 @@ def main():
         description="HuskyBot: PDF Processor, Document Search, Scraper, and RAG-based Chatbot")
 
     # Add argument flags for each task
-    parser.add_argument('-processpdf', type=str, help="Path to the PDF file to process")
-    parser.add_argument('-searchdoc', type=str, help="Search query for documents")
-    parser.add_argument('-scrapedoc', type=str, help="URL to scrape document from")
-    parser.add_argument('-runchatbot', choices=['terminal', 'web'],
-                        help="Run the RAG-based chatbot in terminal or web mode")
+    parser.add_argument('--processpdf', action='store_true', help="Trigger PDF processing")
+    parser.add_argument('--searchdoc', action='store_true', help="Trigger document search")
+    parser.add_argument('--scrapedoc', action='store_true', help="Trigger document scraping")
+    parser.add_argument('--runchatbot', choices=['terminal', 'web'], help="Run the RAG-based chatbot in terminal or web mode")
 
     # Parse arguments
     args = parser.parse_args()

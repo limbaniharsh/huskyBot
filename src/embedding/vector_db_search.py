@@ -1,9 +1,13 @@
 from config import Config
+from embedding.vector_store_factory import VectorStoreFactory
+from embedding.embedding_factory import EmbeddingFactory
 
 
-
-def search_vector_db(query, vector_store, k=5, min_search_score=None, filter=None, return_score=False):
-    documents = vector_store.similarity_search_with_score(query, k=k, filter=filter)
+def search_vector_db(query, vector_store, k=5, search_type="distance", min_search_score=None, filter=None, return_score=False):
+    if search_type.lower() == "distance":
+        documents = vector_store.similarity_search_with_score(query, k=k, filter=filter)
+    else:
+        documents = vector_store.similarity_search_with_relevance_scores(query, k=k, filter=filter)
     if min_search_score is None:
         if return_score:
             return documents
@@ -22,6 +26,10 @@ def display_search_results(documents):
     for doc, score in documents:
         print(f"Document File: {doc.metadata["file_name"]}, Score: {score}\n")
         print(f"Document content: {doc.page_content}\n")
+    
+    print(f"SUMMARY - Number of Doc-{len(documents)}\n")
+    for doc, score in documents:
+        print(f"Doc name-{doc.metadata["file_name"]} and Score: {score}\n")
 
 
 def main_search_db(config=None):
@@ -37,7 +45,8 @@ def main_search_db(config=None):
         query = input("Enter Query: - ")
         if query == "exit":
             break
-        documents = search_vector_db(query, vector_store, k=config.num_documents, min_search_score=config.min_search_score, return_score=True)
+        documents = search_vector_db(query, vector_store, k=config.num_documents, search_type="relevance", min_search_score=config.min_search_score, return_score=True)
         # Display the results
         display_search_results(documents)
+        
 

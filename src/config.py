@@ -46,6 +46,7 @@ class Config:
         self.document_search = config_data.get('document_search', {})
         self.num_documents = self.document_search.get('num_documents', 5)  # Default to retrieving top 5 documents
         self.min_search_score = self.document_search.get('min_search_score', 0)  # Default to 0.5
+        self.sim_search_type = self.document_search.get("search_type", "score")
 
         # Scraper settings
         self.scraper = config_data.get('scraper', {})
