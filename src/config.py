@@ -39,7 +39,7 @@ class Config:
         # Data file paths
         self.data_files = config_data.get('data_files', {})
         self.default_data_path = pathlib.Path(self.data_files.get('default_data_path', "../data"))
-        self.raw_data_path = self.default_data_path / self.data_files.get('raw_data', "/raw")
+        self.raw_data_path = self.default_data_path / self.data_files.get('raw_data_folder', "raw")
         self.file_url_mapper_name = self.data_files.get('file_url_mapper', "FileURLMapper.csv")
 
         # Document search settings

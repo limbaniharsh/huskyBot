@@ -24,7 +24,7 @@ vector_store:
 
 data_files:
   default_data_path: "../data"  # Path to source data files (text, documents, etc.)
-  raw_data: "/raw"
+  raw_data_folder: "raw"
   file_url_mapper_name: FileURLMapper.csv
 
 document_search:

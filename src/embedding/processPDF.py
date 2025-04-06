@@ -4,8 +4,14 @@ from embedding.embedder import PDFToVectorDB
 from embedding.vector_store_factory import VectorStoreFactory
 from embedding.embedding_factory import EmbeddingFactory
 from config import Config
+import json
+
 
 METADATA_KEYS = ['creationdate', 'source', 'total_pages', 'title', 'keywords']
+
+def store_vector_ids(file_vectore_ids, file_path):
+    with open(file_path, "w") as file:
+        json.dump(file_vectore_ids, file, indent=4)
 
 
 def load_file_url_map(file_path):
@@ -62,6 +68,10 @@ def main_process_pdf(config=None):
     data_dir = config.default_data_path
     raw_data_dir = config.raw_data_path
 
+    if not os.path.exists(raw_data_dir):
+        print(f"Raw data does not exist at {raw_data_dir}")
+        return
+
     files = [f for f in raw_data_dir.iterdir()]
     file_url_mapper_path = data_dir / config.file_url_mapper_name
     vector_db_location = data_dir / config.vector_store_file_name
@@ -71,11 +81,12 @@ def main_process_pdf(config=None):
 
     # Initialize embedding and vector store
     embedding = EmbeddingFactory.get_embeddings_from_config()
-    vector_store = VectorStoreFactory.get_vector_store_from_config(embedding)
+    vector_store = VectorStoreFactory.initialize_vector_store(embedding)
 
     # Initialize processor
     processor = PDFToVectorDB(vector_store=vector_store, embedding=embedding)
 
     # Process the PDFs and save vectors
-    process_pdfs(files, processor, file_url_map)
-    VectorStoreFactory.save_local(vector_db_location)
+    file_vectore_ids = process_pdfs(files, processor, file_url_map)
+    store_vector_ids(file_vectore_ids, data_dir / "vectorDB_ids.json")
+    VectorStoreFactory.save_local(vector_store, config=config)

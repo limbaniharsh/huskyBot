@@ -28,8 +28,7 @@ def main():
         main_search_db(default_config)
 
     elif args.scrapedoc:
-        url = args.scrapedoc
-        main_scraper(url)
+        main_scraper(default_config)
 
     # # If running the RAG-based chatbot
     # elif args.runchatbot:
