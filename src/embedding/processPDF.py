@@ -1,9 +1,8 @@
 import tqdm
-from embedder import *
 from utils import *
-from embedder import PDFToVectorDB
-from vector_store_factory import VectorStoreFactory
-from embedding_factory import EmbeddingFactory
+from embedding.embedder import PDFToVectorDB
+from embedding.vector_store_factory import VectorStoreFactory
+from embedding.embedding_factory import EmbeddingFactory
 from config import Config
 
 METADATA_KEYS = ['creationdate', 'source', 'total_pages', 'title', 'keywords']

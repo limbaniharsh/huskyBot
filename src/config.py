@@ -50,7 +50,7 @@ class Config:
         # Scraper settings
         self.scraper = config_data.get('scraper', {})
         self.base_url = self.scraper.get("base_url", "https://kb.uconn.edu")
-        self.copy_scraper_data_to_data = True if self.scraper.get("copy_to_data", "true").lower() == "true" else False
+        self.copy_scraper_data_to_data = self.scraper.get("copy_to_data", True)
 
 
         # Logging settings
@@ -59,10 +59,10 @@ class Config:
         self.log_file = self.logging.get('log_file', 'huskybot.log')
         self.max_log_size = self.logging.get('max_log_size', '10MB')
 
-    def __str__(self):
-        return (f"App: {self.app_name}, Version: {self.version}, Debug: {self.debug}, "
-                f"Model: {self.llm_model_name}, Provider: {self.llm_model_provider}, "
-                f"Embedding Model: {self.embedding_model_name}, Vector Store: {self.vector_store_type}")
+    # def __str__(self):
+    #     return (f"App: {self.app_name}, Version: {self.version}, Debug: {self.debug}, "
+    #             f"Model: {self.llm_model_name}, Provider: {self.llm_model_provider}, "
+    #             f"Embedding Model: {self.embedding_model_name}, Vector Store: {self.vector_store_type}")
 
     @staticmethod
     def default_config():
@@ -72,5 +72,7 @@ class Config:
 
 # Example usage
 if __name__ == "__main__":
-    config = Config('config.yaml')  # Path to your YAML config file
-    print(config)
+    import pprint
+
+    config = Config.default_config()  # Path to your YAML config file
+    pprint.pprint(vars(config))

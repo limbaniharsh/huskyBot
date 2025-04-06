@@ -1,7 +1,7 @@
-from doc_loader import PDFDocLoader
-from embedding_factory import EmbeddingFactory
-from vector_store_factory import VectorStoreFactory
-from splitter_factory import SplitterFactory
+from embedding.doc_loader import PDFDocLoader
+from embedding.embedding_factory import EmbeddingFactory
+from embedding.vector_store_factory import VectorStoreFactory
+from embedding.splitter_factory import SplitterFactory
 import pathlib
 
 

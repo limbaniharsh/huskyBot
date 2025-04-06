@@ -1,6 +1,6 @@
 import logging
 from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
-from config import config, Config
+from config import Config
 
 
 class SplitterFactory:

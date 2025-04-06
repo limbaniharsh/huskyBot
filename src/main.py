@@ -6,7 +6,6 @@ from scraper.scraper import main_scraper
 
 
 def main():
-    # Argument parser setup
     default_config = Config.default_config()
 
     # Argument parser setup

@@ -2,9 +2,6 @@ import csv
 import os
 import json
 import logging
-
-from IPython.testing.tools import default_config
-
 import config
 
 

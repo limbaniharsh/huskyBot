@@ -1,6 +1,7 @@
 import logging
 import faiss
-from langchain_core.vectorstores import InMemoryVectorStore, FAISS
+from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
 
 from config import Config
