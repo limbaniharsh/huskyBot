@@ -7,3 +7,4 @@ src/scraper/Data/
 src/scraper/Data.zip
 data/raw
 __pycache__
+Backup*
