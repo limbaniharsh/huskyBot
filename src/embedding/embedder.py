@@ -11,7 +11,7 @@ def get_default_embeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
 def get_default_splitter(**kwargs):
     """Return the default text splitter."""
-    return RecursiveCharacterTextSplitter(chunk_size=kwargs.get("chunk_size"), chunk_overlap=kwargs.get("chunk_overlap"))
+    return RecursiveCharacterTextSplitter(chunk_size=kwargs.get("chunk_size"), chunk_overlap=kwargs.get("chunk_overlap"), add_start_index=True)
 
 def get_default_vector_store(embedding):
     """Return the default vector store."""

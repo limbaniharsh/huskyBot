@@ -1,0 +1,56 @@
+app_name: HuskyBot
+version: 1.0
+debug: true
+
+# Model configuration
+llm_model:
+  provider: openai  # Options: openai, huggingface, ollama, or any other model provider
+  name: gpt-4   # The model name (e.g., GPT-3, GPT-4, etc.)
+  temperature: 0.7   # Controls randomness of the model's responses (0.0 to 1.0)
+  max_tokens: 150    # Maximum number of tokens in the model's output
+  api_key: "your_api_key_here"  # API key for the model provider (if applicable)
+  endpoint_url: "https://api.openai.com/v1/engines/gpt-4/completions"  # API endpoint URL for external models
+  local_api_endpoint: "http://localhost:5001"  # For Ollama or other local model hosting
+
+# Embedding configuration (for RAG)
+embedding:
+  model_provider: sentence_transformers  # Options: sentence_transformers, openai, huggingface, etc.
+  model_name: sentence-transformers/all-MiniLM-L6-v2  # The embedding model (e.g., sentence-transformers)
+  embedding_dim: 768   # Embedding dimension (based on model you are using)
+  normalize_embeddings: true  # Whether to normalize the embeddings before storing or comparing
+  local_embedding_path: "/path/to/local/embedding/model"  # Path to local model, if using locally hosted embeddings
+
+# Knowledge Base configuration (for retrieval)
+knowledge_base:
+  type: faiss  # Options: faiss, vector_db, elasticsearch, etc.
+  db_path: "/path/to/knowledge_base"  # Path to your knowledge base directory or database
+  vector_search_limit: 10  # Limit the number of retrieved documents for each query
+
+# Search Configuration (for the retriever)
+retriever:
+  type: cosine_similarity   # Retrieval method: options like cosine_similarity, dot_product, etc.
+  batch_size: 8             # Number of queries to process in a batch
+  top_k: 5                  # Number of top results to retrieve per query
+
+# User interaction and context
+context_window: 3    # Number of previous interactions to keep in memory for context
+max_input_length: 512  # Max length for input queries (in tokens or characters)
+answer_format: simple  # The format of the answer: could be 'simple', 'detailed', 'list', etc.
+
+# API settings (if your bot has API endpoints)
+api:
+  host: "0.0.0.0"    # Host IP address for the API server
+  port: 5000          # Port number
+  max_connections: 100  # Max number of concurrent connections
+
+# Logging configuration
+logging:
+  level: INFO          # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_file: "huskybot.log"  # Path to log file
+  max_log_size: 10MB   # Max log file size before rotation
+
+# Additional settings (optional)
+external_services:
+  sentiment_analysis: false  # Enable or disable external sentiment analysis service
+  nlp_pipeline:
+    enabled: true            # Enable a specific NLP pipeline like tokenization, POS tagging, etc.

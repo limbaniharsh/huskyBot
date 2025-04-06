@@ -1,8 +1,10 @@
 selenium
 langchain-community
-pypdf
 langchain-core
+langgraph
 langchain-huggingface
-pymupdf4llm
+langchain-google-genai
+faiss-cpu
 pymupdf
 tqdm
+pyyaml
