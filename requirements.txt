@@ -11,3 +11,4 @@ faiss-cpu
 pymupdf
 tqdm
 pyyaml
+streamlit

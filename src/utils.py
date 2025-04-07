@@ -45,3 +45,7 @@ def setup_logger(config=None):
     logger.addHandler(fh)
 
     return logger
+
+def get_logger():
+    config = Config.default_config()
+    return logging.getLogger(config.app_name)
