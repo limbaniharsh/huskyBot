@@ -34,7 +34,7 @@ document_search:
   # - "distance" (lower values indicate better matches)
   # - "relevance" (higher values indicate better matches)
   search_type: "distance"  # Default filter type
-  min_search_score: 0.5    # The min_search_score value for filtering results
+  keep_with_score: 0.5    # The keep_with_score value for filtering results
   
 
 scraper:

@@ -16,8 +16,11 @@ class Config:
         self.llm_model = config_data.get('llm_model', {})
         self.llm_model_provider = self.llm_model.get('provider', 'google_ai')
         self.llm_model_name = self.llm_model.get('name', 'gemini-2.0-flash-001')
-        self.temperature = self.llm_model.get('temperature', 0.7)
-        self.max_tokens = self.llm_model.get('max_tokens', 150)
+        self.temperature = self.llm_model.get('temperature', 0)
+        self.max_tokens = self.llm_model.get('max_tokens', None)
+        self.timeout = self.llm_model.get('timeout', None)
+        self.max_retries = self.llm_model.get('max_tokens', None)
+
 
         # Embedding settings
         self.embedding = config_data.get('embedding', {})
@@ -45,7 +48,7 @@ class Config:
         # Document search settings
         self.document_search = config_data.get('document_search', {})
         self.num_documents = self.document_search.get('num_documents', 5)  # Default to retrieving top 5 documents
-        self.min_search_score = self.document_search.get('min_search_score', 0)  # Default to 0.5
+        self.keep_with_score = self.document_search.get('keep_with_score', None)
         self.sim_search_type = self.document_search.get("search_type", "score")
 
         # Scraper settings
