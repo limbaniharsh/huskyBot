@@ -4,7 +4,7 @@ from utils import setup_logger
 from embedding.processPDF import main_process_pdf
 from embedding.vector_db_search import main_search_db
 from scraper.scraper import main_scraper
-
+from model.model import run_terminal_chatbot
 
 def main():
     default_config = Config.default_config()
@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--scrapedoc', action='store_true', help="Trigger document scraping")
     parser.add_argument('--runchatbot', choices=['terminal', 'web'], help="Run the RAG-based chatbot in terminal or web mode")
 
-    # Parse arguments
+    # Parse argumentsgit 
     args = parser.parse_args()
     if args.processpdf:
         logger.info("Starting Process PDF")
@@ -47,12 +47,20 @@ def main():
         except Exception as e:
             logger.error(f"Error during document scraping: {str(e)}")
 
-    # # If running the RAG-based chatbot
-    # elif args.runchatbot:
-    #     if args.runchatbot == 'terminal':
-    #         run_terminal_chatbot()  # Call the function to run chatbot in terminal mode
-    #     elif args.runchatbot == 'web':
-    #         run_web_chatbot()  # Call the function to run chatbot in web mode
+    # If running the RAG-based chatbot
+    elif args.runchatbot:
+        if args.runchatbot == 'terminal':
+            try:
+                logger.info("Starting chatbot in Terminal mode.")
+                run_terminal_chatbot(default_config)  
+            except Exception as e:
+                logger.error(f"Error during running chatbot in terminal mode: {str(e)}")
+        elif args.runchatbot == 'web':
+            try:
+                logger.info("Starting chatbot in Web mode.")
+                #run_web_chatbot(default_config)
+            except Exception as e:
+                logger.error(f"Error during running chatbot in Web mode: {str(e)}")
 
     else:
         logger.error("Error: No valid argument provided. Use --processpdf, --searchdoc, --scrapedoc, or --runchatbot.")

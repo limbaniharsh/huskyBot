@@ -3,8 +3,11 @@ from langchain_core.tools import tool
 from langgraph.graph import END, StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from embedding.vector_db_search import search_vector_db
+from embedding.vector_store_factory import VectorStoreFactory
+from embedding.embedding_factory import EmbeddingFactory
 from utils import get_logger
-from ..config import Config
+from config import Config
+from llm_factory import LLMFactory
 
 logger = get_logger()
 
@@ -122,3 +125,24 @@ def build_RAG_pipeline(llm, vector_store, config=None):
 
     logger.debug("RAG pipeline built successfully.")
     return graph
+
+
+
+def run_terminal_chatbot(config=None):
+    if config is None:
+        config = Config.default_config()
+    
+    embedding = EmbeddingFactory.get_embeddings_from_config(config=config)
+    llm = LLMFactory.get_llm_from_config(config=config)
+    vector_store = VectorStoreFactory.get_vector_store_from_config(config=config)
+
+    graph = build_RAG_pipeline(llm, vector_store, config=config)
+
+    while True:
+        input_message = input("Enter Query: - ")
+        if input_message == "exit":
+            break
+        
+        for step in graph.stream(
+        {"messages": [{"role": "user", "content": input_message}]},stream_mode="values",):
+            step["messages"][-1].pretty_print()
