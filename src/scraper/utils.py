@@ -1,9 +1,11 @@
 import csv
 import os
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.support.wait import WebDriverWait
+import logging
 
+logger = logging.getLogger()
 
 def check_exists(driver, by, xpath):
     """ Checks if an element exists and is enabled on the page."""
@@ -60,20 +62,20 @@ def scroll_to_img_wait_until_load(driver, img_element, timeout=10):
 def wait_until_all_image_load(driver):
     """ Waits for all images on the page to be fully loaded. """
     images = driver.find_elements(By.TAG_NAME, "img")
-    print(f"Found {len(images)}")
+    logger.info(f"Found {len(images)}")
 
     for img in images:
         scroll_to_img_wait_until_load(driver, img)
 
 
-def wait_until_knowledge_based_page_load(driver, timeout=20):
+def wait_until_knowledge_based_page_load(driver):
     """ Waits for a knowledge-based page to finish loading by checking for specific loading elements. """
-    WebDriverWait(driver, timeout).until(
-        lambda d: check_exists(driver, By.CLASS_NAME, "ext_loading"))
+    try:
+        while check_exists(driver, By.CLASS_NAME, "loading_spinner"):
+            continue
+    except StaleElementReferenceException:
+        return
 
-    WebDriverWait(driver, timeout).until(
-        lambda d: d.execute_script(
-            r"return Array.from(document.getElementsByClassName('ext_loading')).every((e)=> e.style.display == 'none')"))
 
 
 def write_into_csv(data, filename):

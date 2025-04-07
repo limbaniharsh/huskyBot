@@ -90,7 +90,3 @@ def main_process_pdf(config=None):
     file_vectore_ids = process_pdfs(files, processor, file_url_map)
     store_vector_ids(file_vectore_ids, data_dir / "vectorDB_ids.json")
     VectorStoreFactory.save_local(vector_store, config=config)
-
-
-if __name__ == "__main__":
-    main_process_pdf()

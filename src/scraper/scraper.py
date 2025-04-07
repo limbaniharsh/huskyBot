@@ -4,18 +4,18 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from config import Config
 from scraper.utils import *
 
-def create_save_pdf(driver, url, file_name):
+def create_save_pdf(driver, url, file_path):
     wait_until_all_image_load(driver)
     scroll_down(driver)
 
     print_options = PrintOptions()
     pdf = driver.print_page(print_options)
 
-    with open(file_name, 'wb') as f:
-        print(f"Writing -{url} - into {file_name}")
+    with open(file_path, 'wb') as f:
+        print(f"Writing -{url} - into {file_path}")
         f.write(base64.b64decode(pdf))
 
-    completed_links_file.append({"file": file_name, "URL": url})
+    completed_links_file.append({"file": file_path.stem, "URL": url})
     already_visited_url.add(url)
 
 
@@ -49,7 +49,7 @@ def scrapper(driver, base_url, base_path):
                 printable_div = driver.find_element(By.ID, "printable_document")
                 new_links = printable_div.find_elements(
                                             By.XPATH,
-                                            ".//div[contains(@class,'children_container page_tree_container')]//a"
+                                            ".//ul[contains(@class,'children_container') and contains(@class, 'page_tree_container')]//a"
                                             )
 
                 print(f"{len(new_links)} - New link extracted from {url}")
@@ -123,6 +123,8 @@ def main_scraper(config=None):
             writer.writeheader()
             writer.writerows(unfetched_url)
         print("Write unfetched URL to UnFetchedURL.csv.")
+        write_into_csv(completed_links_file, csv_file)
+        raise e
 
     write_into_csv(completed_links_file, csv_file)
 
@@ -136,7 +138,7 @@ already_visited_url = set()
 visited_space_next_file_number = {}
 # Below dict is in format "Space": "Home URL for Space"
 data_to_scrape = {
-    #"StudentAdmin": ["/space/SAS/10758194553"],
+    # "StudentAdmin": ["/space/SAS/10758194553"],
     "Parking": ["/space/PAR/10894836117"],
     # "HuskyCT": ["/space/TL/10726900389"],
     # "HuskyCT-Ultra": ["/space/TL/26040828048", "/space/TL/26211713033", "/space/TL/26054328575",
@@ -157,7 +159,3 @@ data_to_scrape = {
     # "IT-Devices": ["/space/IKB/10852500909"],
     # "IT-Microsoft": ["/space/IKB/10770819474"]
 }
-
-
-if __name__ == "__main__":
-    main_scraper()

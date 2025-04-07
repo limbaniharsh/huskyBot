@@ -2,10 +2,9 @@ import csv
 import os
 import json
 import logging
-import config
+from config import Config
 
 
-app_config = config.Config.default_config()
 
 def read_file_url_mapper(filename):
     """
@@ -29,17 +28,18 @@ def write_dict_as_json(file_path, dictionary):
         json.dump(dictionary, f, indent=4)
 
 
-def setup_logger(name: str, log_file_path):
+def setup_logger(config=None):
     """Setup a logger with a specific name to log only to a file."""
-    if name is None:
-        name  = app_config.app_name
-    if log_file_path is None:
-        log_file_path = app_config.log_file
+    if config is None:
+        config = Config.default_config()
+
+    name  = config.app_name
+    log_file_path = config.log_file
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     fh = logging.FileHandler(log_file_path)
-    fh.setLevel(logging.INFO)
+    fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
     logger.addHandler(fh)

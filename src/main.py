@@ -1,5 +1,6 @@
 import argparse
 from config import Config
+from utils import setup_logger
 from embedding.processPDF import main_process_pdf
 from embedding.vector_db_search import main_search_db
 from scraper.scraper import main_scraper
@@ -7,6 +8,8 @@ from scraper.scraper import main_scraper
 
 def main():
     default_config = Config.default_config()
+    logger = setup_logger(default_config)
+    logger.info("HuskyBot: PDF Processor, Document Search, Scraper, and RAG-based Chatbot started.")
 
     # Argument parser setup
     parser = argparse.ArgumentParser(
@@ -20,15 +23,29 @@ def main():
 
     # Parse arguments
     args = parser.parse_args()
-
     if args.processpdf:
-        main_process_pdf(default_config)
+        logger.info("Starting Process PDF")
+        try:
+            main_process_pdf(default_config)
+            logger.info("PDF processing completed successfully.")
+        except Exception as e:
+            logger.error(f"Error during PDF processing: {str(e)}")
 
     elif args.searchdoc:
-        main_search_db(default_config)
+        logger.info("Starting Document Search")
+        try:
+            main_search_db(default_config)
+            logger.info("Document search completed successfully.")
+        except Exception as e:
+            logger.error(f"Error during document search: {str(e)}")
 
     elif args.scrapedoc:
-        main_scraper(default_config)
+        logger.info("Starting Document Scraping")
+        try:
+            main_scraper(default_config)
+            logger.info("Document scraping completed successfully.")
+        except Exception as e:
+            logger.error(f"Error during document scraping: {str(e)}")
 
     # # If running the RAG-based chatbot
     # elif args.runchatbot:
@@ -38,6 +55,7 @@ def main():
     #         run_web_chatbot()  # Call the function to run chatbot in web mode
 
     else:
+        logger.error("Error: No valid argument provided. Use --processpdf, --searchdoc, --scrapedoc, or --runchatbot.")
         print("Error: No valid argument provided. Use -processpdf, -searchdoc, -scrapedoc, or -runchatbot.")
 
 
