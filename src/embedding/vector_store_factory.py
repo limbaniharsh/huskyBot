@@ -1,11 +1,11 @@
-import logging
 import faiss
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
-
+from utils import get_logger
 from config import Config
 
+logger = get_logger()
 
 class VectorStoreFactory:
     """Factory class to provide vector stores based on configuration."""
@@ -31,7 +31,7 @@ class VectorStoreFactory:
             return VectorStoreFactory.load_vector_db_from_local_if_exist(file_path, embedding)
 
         else:
-            logging.warning(f"Vector store type {vector_store_type} not recognized, defaulting to InMemory.")
+            logger.warning(f"Vector store type {vector_store_type} not recognized, defaulting to InMemory.")
             return VectorStoreFactory.get_in_memory_vector_store(embedding)
 
     @staticmethod
@@ -43,7 +43,7 @@ class VectorStoreFactory:
         try:
             return FAISS.load_local(file_name, embedding, allow_dangerous_deserialization=True)
         except Exception as e:
-            logging.error(f"Failed to load vector DB from local file {file_name}: {str(e)}")
+            logger.error(f"Failed to load vector DB from local file {file_name}: {str(e)}")
             print("Using new FAISS vector store\n")
             return VectorStoreFactory.initialize_vector_store(embedding)
 
@@ -60,7 +60,7 @@ class VectorStoreFactory:
                 index_to_docstore_id={},
             )
         except Exception as e:
-            logging.error(f"Failed to initialize vector store: {str(e)}")
+            logger.error(f"Failed to initialize vector store: {str(e)}")
             raise ValueError(f"Failed to initialize vector store: {str(e)}")
 
     @staticmethod
@@ -76,7 +76,7 @@ class VectorStoreFactory:
         try:
 
             vector_store.save_local(file_path, index_name=index_name)
-            logging.info(f"Vector store saved successfully to {file_path} with index name {index_name}.")
+            logger.info(f"Vector store saved successfully to {file_path} with index name {index_name}.")
         except Exception as e:
-            logging.error(f"Failed to save vector store to {file_path}: {str(e)}")
+            logger.error(f"Failed to save vector store to {file_path}: {str(e)}")
             raise ValueError(f"Failed to save vector store to {file_path}: {str(e)}")

@@ -45,6 +45,8 @@ class LLMFactory:
 
     @staticmethod
     def get_openai_llm(model_name, config):
+        from langchain_openai import ChatOpenAI
+
         return ChatOpenAI(
             model=model_name,
             temperature=config.temperature,
@@ -55,5 +57,12 @@ class LLMFactory:
 
     @staticmethod
     def get_ollama_llm(model_name, config):
-        raise NotImplementedError("Ollama LLM integration is not implemented.")
+        from langchain_ollama import ChatOllama
 
+        return ChatOllama(
+            model=model_name,
+            temperature=config.temperature,
+            max_tokens=config.max_tokens,
+            timeout=config.timeout,
+            max_retries=config.max_retries
+        )

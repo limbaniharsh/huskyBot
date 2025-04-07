@@ -4,7 +4,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_openai import OpenAIEmbeddings
 from langchain_ollama import OllamaEmbeddings
+from utils import get_logger
 
+logger = get_logger()
 
 class EmbeddingFactory:
     """Factory class to provide embeddings based on configuration."""
@@ -20,6 +22,9 @@ class EmbeddingFactory:
         model_name = config.embedding_model_name
         provider = config.embedding_provider
 
+        logger.info(f"Embedding provider selected: {provider}")
+        logger.info(f"Embedding model selected: {model_name}")
+
         if provider == "huggingface":
             return EmbeddingFactory.get_huggingface_embeddings(model_name)
 
@@ -33,22 +38,27 @@ class EmbeddingFactory:
             return EmbeddingFactory.get_openai_embeddings(model_name)
 
         else:
-            logging.warning(f"Embedding type {provider} not recognized, defaulting to HuggingFace.")
+            logger.warning(f"Embedding type {provider} not recognized, defaulting to HuggingFace.")
             return EmbeddingFactory.get_huggingface_embeddings(model_name)
 
     @staticmethod
     def get_huggingface_embeddings(model_name):
+        logger.debug(f"Creating HuggingFace embeddings with model: {model_name}")
+
         return HuggingFaceEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_openai_embeddings(model_name):
+        logger.debug(f"Creating OpenAI embeddings with model: {model_name}")
         return OpenAIEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_google_embeddings(model_name):
+        logger.debug(f"Creating Google AI embeddings with model: {model_name}")
         return GoogleGenerativeAIEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_ollama_embeddings(model_name):
+        logger.debug(f"Creating Ollama embeddings with model: {model_name}")
         return OllamaEmbeddings(model_name=model_name)
 
