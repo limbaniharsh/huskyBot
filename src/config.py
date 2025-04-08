@@ -19,7 +19,7 @@ class Config:
         self.temperature = self.llm_model.get('temperature', 0)
         self.max_tokens = self.llm_model.get('max_tokens', None)
         self.timeout = self.llm_model.get('timeout', None)
-        self.max_retries = self.llm_model.get('max_tokens', None)
+        self.max_retries = self.llm_model.get('max_tokens', 2)
 
 
         # Embedding settings
