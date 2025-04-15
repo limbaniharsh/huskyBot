@@ -1,4 +1,3 @@
-import logging
 from config import Config
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings

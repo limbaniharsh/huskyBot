@@ -1,6 +1,8 @@
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_core.documents import Document
+from utils import get_logger
 
+logger = get_logger()
 
 def get_default_metadata_keys():
     metadata_keys = ['creationdate', 'keywords', 'source', 'title', 'total_pages']
@@ -24,6 +26,7 @@ class PDFDocLoader:
         self.new_metadata = new_metadata
 
     def load(self) -> list[Document]:
+        logger.info(f"Loading documents from file: {self.file_path}")
         loader = self.loader
         docs = loader.load()
         for doc in docs:
@@ -33,6 +36,7 @@ class PDFDocLoader:
             metadata.update(self.new_metadata)
             if len(metadata):
                 doc.metadata = metadata
-
+                
+        logger.info("Document loading and metadata update completed")
         return docs
 
