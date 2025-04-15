@@ -1,8 +1,4 @@
 from config import Config
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_openai import OpenAIEmbeddings
-from langchain_ollama import OllamaEmbeddings
 from utils import get_logger
 
 logger = get_logger()
@@ -42,22 +38,29 @@ class EmbeddingFactory:
 
     @staticmethod
     def get_huggingface_embeddings(model_name):
-        logger.debug(f"Creating HuggingFace embeddings with model: {model_name}")
+        from langchain_huggingface import HuggingFaceEmbeddings
 
+        logger.debug(f"Creating HuggingFace embeddings with model: {model_name}")
         return HuggingFaceEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_openai_embeddings(model_name):
+        from langchain_openai import OpenAIEmbeddings
+
         logger.debug(f"Creating OpenAI embeddings with model: {model_name}")
         return OpenAIEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_google_embeddings(model_name):
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
         logger.debug(f"Creating Google AI embeddings with model: {model_name}")
         return GoogleGenerativeAIEmbeddings(model_name=model_name)
 
     @staticmethod
     def get_ollama_embeddings(model_name):
+        from langchain_ollama import OllamaEmbeddings
+
         logger.debug(f"Creating Ollama embeddings with model: {model_name}")
         return OllamaEmbeddings(model_name=model_name)
 

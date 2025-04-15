@@ -20,6 +20,7 @@ class Config:
         self.max_tokens = self.llm_model.get('max_tokens', None)
         self.timeout = self.llm_model.get('timeout', None)
         self.max_retries = self.llm_model.get('max_tokens', 2)
+        self.multi_turn = self.llm_model.get('multi_turn', True)
 
 
         # Embedding settings

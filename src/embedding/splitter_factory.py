@@ -1,4 +1,3 @@
-import logging
 from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
 from config import Config
 from utils import get_logger

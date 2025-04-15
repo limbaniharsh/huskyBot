@@ -1,10 +1,12 @@
 import argparse
+import sys
 from config import Config
 from utils import setup_logger
 from embedding.processPDF import main_process_pdf
 from embedding.vector_db_search import main_search_db
 from scraper.scraper import main_scraper
 from model.model import run_terminal_chatbot
+from streamlit.web import cli as stcli
 
 def main():
     default_config = Config.default_config()
@@ -50,15 +52,21 @@ def main():
     # If running the RAG-based chatbot
     elif args.runchatbot:
         if args.runchatbot == 'terminal':
+        
             try:
                 logger.info("Starting chatbot in Terminal mode.")
                 run_terminal_chatbot(default_config)  
             except Exception as e:
                 logger.error(f"Error during running chatbot in terminal mode: {str(e)}")
+        
         elif args.runchatbot == 'web':
+        
             try:
                 logger.info("Starting chatbot in Web mode.")
-                #run_web_chatbot(default_config)
+
+                sys.argv = ["streamlit", "run", "./web/app.py"]
+                sys.exit(stcli.main())
+                
             except Exception as e:
                 logger.error(f"Error during running chatbot in Web mode: {str(e)}")
 
