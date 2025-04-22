@@ -20,7 +20,7 @@ splitter:
 
 vector_store:
   type: faiss
-  file_name: faiss_index
+  file_name: faiss_index_new
   index_name: index
 
 data_files:
