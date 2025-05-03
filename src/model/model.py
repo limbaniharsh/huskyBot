@@ -9,36 +9,28 @@ from embedding.embedding_factory import EmbeddingFactory
 from utils import get_logger
 from config import Config
 from model.llm_factory import LLMFactory
+from model.prompt import *
 import uuid
 
 logger = get_logger()
 
-SYSTEM_TOOL_MSG = """You are an assistant designed to provide answers based on the University of Connecticut (UConn) knowledge base. Your name is HuskyBot built by Harsh Patel.
-                    - If a query is related to UConn and requires more context, call the tool with an appropriate query to fetch relevant documents from the knowledge base. 
-                    - Ensure the query is specific and clearly related to the subject matter to retrieve the most relevant documents.
-                    - If you feel the query could be rewritten to fetch more relevant content, feel free to adjust or rephrase it to better align with the knowledge base.
-                    
-                    If the query is not related to UConn or education, you should only deny the answer if the query is too off-topic. 
-                    For example, if the query is about a completely unrelated subjects, you should respond with a polite message indicating that the query is outside the scope of your knowledge.
-                    You can say something like: *"I can only provide information related to the University of Connecticut and education-related topics."* 
-                    However, for queries that are slightly off-topic but still within a reasonable, you can try to provide an answer.
 
-"""
-SYSTEM_MSG = """"You are an assistant designed to answer questions related to the University of Connecticut (UConn) knowledge base. Your name is HuskyBot built by Harsh Patel.
-                - If a query is related to UConn and requires more context, call the tool with an appropriate query to fetch relevant documents from the knowledge base.
-                - Ensure the query is specific and clearly related to the subject matter to retrieve the most relevant documents.
-                - If you feel the query could be rewritten to fetch more relevant content, feel free to adjust or rephrase it to better align with the knowledge base.
-                
-                If the query is not related to UConn or education, you should only deny the answer if the query is too off-topic. 
-                For example, if the query is about a completely unrelated subjects, you should respond with a polite message indicating that the query is outside the scope of your knowledge.
-                You can say something like: *"I can only provide information related to the University of Connecticut and education-related topics."* 
-                However, for queries that are slightly off-topic but still within a reasonable, you can try to provide an answer.
-                
-                You should utilize the provided context to generate accurate answers. If you're uncertain about the answer, acknowledge that you don’t know. 
-                For questions that inquire "How," provide a detailed, step-by-step explanation. Whenever necessary, include metadata with the URL of the original source site to ensure proper attribution.
-                **Important:** Please provide all responses in markdown format.
-"""
 
+def build_context_prompt(docs):
+
+    blocks = []
+    for idx, doc in enumerate(docs, start=1):
+        meta = doc.metadata or {}
+        block = (
+            f"### Doc {idx}\n"
+            f"Title : {meta.get('title', 'Untitled')}\n"
+            f"URL   : {meta.get('source_url', 'N/A')}\n"
+            f"{doc.page_content.strip()}"
+        )
+        blocks.append(block)
+
+    serialized = "\n\n---\n\n".join(blocks)
+    return serialized
 
 
 
@@ -85,11 +77,9 @@ class PipelineFactory:
                 logger.error(f"Error occurred while retrieving documents for query: {query} - {str(e)}")
                 retrieved_docs = []
             
-            serialized = "\n\n".join(
-                (f"Source: {doc.metadata}\n" f"Content: {doc.page_content}")
-                for doc in retrieved_docs
-            )
-            logger.debug(f"Serialized retrieval result: {serialized[:200]}...") 
+            serialized = build_context_prompt(retrieved_docs)
+
+            logger.debug(f"Serialized retrieval result: {serialized}...") 
             return serialized, retrieved_docs
 
         def query_or_respond(state: MessagesState):
@@ -128,9 +118,9 @@ class PipelineFactory:
 
             # Format into prompt
             docs_content = "\n\n".join(doc.content for doc in tool_messages)
-            system_message_content = SYSTEM_MSG + f"\n\n {docs_content}"
+            system_message_content = SYSTEM_MSG.format(CONTEXT_BLOCK=docs_content)
 
-            logger.debug(f"System message content: {system_message_content[:200]}...")
+            logger.debug(f"System message content: {system_message_content}...")
 
             conversation_messages = [
                 message

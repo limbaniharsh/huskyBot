@@ -60,7 +60,7 @@ class Config:
 
         # Logging settings
         self.logging = config_data.get('logging', {})
-        self.log_level = self.logging.get('level', 'INFO')
+        self.log_level = self.logging.get('level', 'INFO').upper()
         self.log_file = self.logging.get('log_file', 'huskybot.log')
         self.max_log_size = self.logging.get('max_log_size', '10MB')
 
