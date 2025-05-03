@@ -17,7 +17,7 @@ def load_model():
 st.html(
     """
 <style>
-    .st-emotion-cache-janbn0  {
+    .st-emotion-cache-1c7y2kd  {
         flex-direction: row-reverse;
         text-align: right;       
     }

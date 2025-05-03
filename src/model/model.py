@@ -24,7 +24,7 @@ def build_context_prompt(docs):
         block = (
             f"### Doc {idx}\n"
             f"Title : {meta.get('title', 'Untitled')}\n"
-            f"URL   : {meta.get('source_url', 'N/A')}\n"
+            f"URL   : {meta.get('url', 'N/A')}\n"
             f"{doc.page_content.strip()}"
         )
         blocks.append(block)
