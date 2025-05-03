@@ -11,7 +11,6 @@
 * 📝 **Custom Prompts**: Designed to prioritize official documentation and gracefully reject unsupported queries.
 * 🔒 **Logging & Debugging**: Persistent logging for queries, retrievals, and LLM interactions to aid debugging.
 
----
 
 ## ⚙️ Configuration
 
@@ -25,19 +24,7 @@ All system settings are managed via **`config/config.yaml`** including:
 
 👉 **To customize behavior**, edit `config/config.yaml` before running the pipeline.
 
-Example snippet:
 
-```yaml
-embedding_model: sentence-transformers/all-mpnet-base-v2
-vector_store_type: faiss
-vector_store_file_name: index.faiss
-default_data_path: data/
-raw_data_path: data/raw/
-num_documents: 5
-min_search_score: 0.4
-```
-
----
 
 ## 🏃‍♂️ Quick Start
 
@@ -85,7 +72,6 @@ Or launch in **terminal mode:**
 python src/main.py --runchatbot terminal
 ```
 
----
 
 ## 📝 Usage Example
 
@@ -101,7 +87,6 @@ $ python src/main.py --runchatbot terminal
 >>> How do I connect to campus Wi-Fi?
 ```
 
----
 
 ## 🏛️ Knowledge Base Coverage
 
@@ -115,7 +100,6 @@ Current deployment indexes **674 UConn Knowledge Base articles** covering:
 
 Expandable via re-running scraping and embedding workflows.
 
----
 
 ## 🔮 Future Improvements
 
@@ -123,7 +107,6 @@ Expandable via re-running scraping and embedding workflows.
 * Add frontend features like **user login, saved chat history, and feedback forms**
 * Increase the document corpus beyond the current 674 indexed articles
 
----
 
 ## 🧑‍💻 Tech Stack
 
@@ -134,9 +117,6 @@ Expandable via re-running scraping and embedding workflows.
 * [Sentence-Transformers](https://www.sbert.net/)
 * Python, Selenium, PyMuPDF, PyYAML
 
----
-
-## 📄 License
 
 ## 📄 License
 
