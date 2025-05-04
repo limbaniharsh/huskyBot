@@ -1,5 +1,6 @@
 import streamlit as st
 import uuid
+import logging
 from config import Config
 from model.model import PipelineFactory
 from utils import get_logger
@@ -31,7 +32,9 @@ RAGpipeline = load_model()
 if 'session_token' not in st.session_state:
     st.session_state.session_token = str(uuid.uuid4())
 
-st.write(f"Your unique session token is: {st.session_state.session_token}")
+if logger.level == logging.DEBUG:
+    st.write(f"Your unique session token is: {st.session_state.session_token}")
+
 thread_config = {"configurable": {"thread_id": st.session_state.session_token}}
 
 def answer(prompt):
