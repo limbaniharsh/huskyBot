@@ -1,4 +1,4 @@
-# HuskyBot: LLM-Powered AI Assistant for UConn
+# HuskyBot: GenAI Assistant for UConn
 
 **HuskyBot** is a **Retrieval-Augmented Generation (RAG)** chatbot designed to provide accurate, context-aware answers from the **University of Connecticut Knowledge Base**. Built using **LangChain, LangGraph, FAISS, and Streamlit**, it integrates a large language model backend with a custom document retrieval pipeline.
 
