@@ -1,20 +1,20 @@
 # HuskyBot: GenAI Assistant for UConn
 
-**HuskyBot** is a Generative AI-powered assistant built to deliver accurate, context-aware responses using the University of Connecticut's Knowledge Base. Leveraging a Retrieval-Augmented Generation (RAG) architecture, it combines large language models with a custom document retrieval system.
+This project implements a **Retrieval-Augmented Generation (RAG)** system designed to answer questions from students, faculty, and staff about university resources and services. By leveraging advanced AI models combined with a custom document retrieval system, it delivers accurate, context-aware responses to user queries. Whether addressing academic, administrative, or campus-related questions, this system provides real-time, relevant answers to enhance the university community’s experience.
 
 Developed with **LangChain**, **LangGraph**, **FAISS**, and **Streamlit**, HuskyBot provides intelligent, real-time support tailored to UConn-specific content.
 
-## 🚀 Features
+## Features
 
-* 📚 **Retrieval-Augmented Generation (RAG)**: Combines semantic search with generative AI to ground responses in university documentation.
-* 🔍 **FAISS Vector Store**: Efficient similarity search over preprocessed UConn knowledge base content.
-* 🏗️ **Modular Architecture**: Scraping, embedding, retrieval, and chat modules organized for independent execution.
-* 💬 **Dual Interface**: Supports both **web-based (Streamlit)** and **terminal-based** chatbot interfaces.
-* 📝 **Custom Prompts**: Designed to prioritize official documentation and gracefully reject unsupported queries.
-* 🔒 **Logging & Debugging**: Persistent logging for queries, retrievals, and LLM interactions to aid debugging.
+* **Retrieval-Augmented Generation (RAG)**: Combines semantic search with generative AI to ground responses in university documentation.
+* **FAISS Vector Store**: Efficient similarity search over preprocessed UConn knowledge base content.
+* **Modular Architecture**: Scraping, embedding, retrieval, and chat modules organized for independent execution.
+* **Dual Interface**: Supports both **web-based (Streamlit)** and **terminal-based** chatbot interfaces.
+* **Custom Prompts**: Designed to prioritize official documentation and gracefully reject unsupported queries.
+* **Logging & Debugging**: Persistent logging for queries, retrievals, and LLM interactions to aid debugging.
 
 
-## ⚙️ Configuration
+## Configuration
 
 All system settings are managed via **`config/config.yaml`** including:
 
@@ -24,11 +24,11 @@ All system settings are managed via **`config/config.yaml`** including:
 * **Search parameters**: default `k`, min relevance score
 * **LLM provider configuration** (Gemini, OpenAI, Ollama)
 
-👉 **To customize behavior**, edit `config/config.yaml` before running the pipeline.
+ **To customize behavior**, edit `config/config.yaml` before running the pipeline.
 
 
 
-## 🏃‍♂️ Quick Start
+## Quick Start
 
 1. **Clone the repository:**
 
@@ -54,7 +54,7 @@ Edit `config/config.yaml` if needed.
 ```bash
 python src/main.py --scrapedoc
 ```
-⚠️ **Note:** The scraper uses Selenium to extract UConn Knowledge Base articles. If the website structure or selectors change, the scraper may stop working and require code updates.
+**Note:** The scraper uses Selenium to extract UConn Knowledge Base articles. If the website structure or selectors change, the scraper may stop working and require code updates.
 
 5. **Process PDFs and generate embeddings:**
 
@@ -75,7 +75,7 @@ python src/main.py --runchatbot terminal
 ```
 
 
-## 📝 Usage Example
+## Usage Example
 
 **Web interface:**
 
@@ -90,7 +90,7 @@ $ python src/main.py --runchatbot terminal
 ```
 
 
-## 🏛️ Knowledge Base Coverage
+## Knowledge Base Coverage
 
 Current deployment indexes **674 UConn Knowledge Base articles** covering:
 
@@ -103,14 +103,14 @@ Current deployment indexes **674 UConn Knowledge Base articles** covering:
 Expandable via re-running scraping and embedding workflows.
 
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Upgrade to **paid embedding models** for improved accuracy on large datasets
 * Add frontend features like **user login, saved chat history, and feedback forms**
 * Increase the document corpus beyond the current 674 indexed articles
 
 
-## 🧑‍💻 Tech Stack
+## Tech Stack
 
 * [LangChain](https://www.langchain.com/)
 * [LangGraph](https://github.com/langchain-ai/langgraph)
@@ -118,11 +118,6 @@ Expandable via re-running scraping and embedding workflows.
 * [Streamlit](https://streamlit.io/)
 * [Sentence-Transformers](https://www.sbert.net/)
 * Python, Selenium, PyMuPDF, PyYAML
-
-
-## 📄 License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 
 
